@@ -1,0 +1,135 @@
+Counties: 3,144
+2020    331,578,104
+2021    332,100,166
+2022    333,996,304
+2023    336,755,052
+2024    340,003,797
+2025    341,784,857
+dtype: str
+Counties with no interstate/freeway (true zero): 1,379
+   state        bev  bev_per_1k
+4     CA  1843100.0        46.8
+47    WA   236400.0        29.5
+5     CO   162800.0        27.1
+28    NV    85600.0        26.1
+11    HI    35100.0        24.5
+EV incentive records used: 292
+DC fast stations: 15,941  |  ports: 77,191  |  IONNA sites: 180  |  missing open date: 1
+Within a county: 15,923  |  snapped: 16  |  dropped (outside 50 states + DC): 2
+      dcfc_ports  large_sites
+year                         
+2020       14508         1466
+2021       19850         2014
+2022       26670         2658
+2023       37696         3716
+2024       50725         5148
+2025       67611         6973
+2026       77189         8118
+      y_new_site (%)  y_first_site (%)
+year                                  
+2020            10.1               4.6
+2021            11.0               4.5
+2022            17.1               7.2
+2023            21.5               8.5
+2024            23.3               7.6
+2025             NaN               NaN
+                                 log_pop  log_density  log_fwy_vmt  bev_per_1k  log_ports_per_1k_bev  log_dist_large_dcfc  pop_growth    n
+name                                                                                                                                      
+Metro and suburban                  1.23         1.24         0.95        0.15                  0.51                -1.09        0.63  696
+Small town, underserved            -0.28        -0.08        -0.54       -0.26                 -0.87                 0.50        0.13  942
+Remote, charging desert            -1.24        -1.29        -0.95       -0.35                 -0.79                 1.16       -0.82  543
+High-EV-adoption states             0.50        -0.12         0.27        2.95                  0.45                -0.13       -0.02  180
+Highway corridor, well supplied    -0.01        -0.08         0.40       -0.27                  1.04                -0.39       -0.14  783
+y_new_site: train n=9,432 (positives 1,561), test n=3,144 (positives 732)
+y_first_site: train n=6,604 (positives 439), test n=1,885 (positives 143)
+
+Target A (test = 2025 outcomes, base rate 23.3%)
+                        ROC AUC  PR AUC  Precision top N  Brier
+logit                     0.884   0.738            0.642  0.108
+lasso                     0.885   0.742            0.654  0.109
+forest                    0.883   0.741            0.646  0.109
+rank by population        0.852   0.712            0.624    NaN
+rank by freeway VMT       0.841   0.704            0.622    NaN
+rank by existing ports    0.847   0.707            0.638    NaN
+
+Target B (test = 2025 outcomes, base rate 7.6%)
+                        ROC AUC  PR AUC  Precision top N  Brier
+logit                     0.817   0.315            0.357  0.061
+lasso                     0.818   0.315            0.364  0.060
+forest                    0.818   0.319            0.350  0.061
+rank by population        0.772   0.278            0.294    NaN
+rank by freeway VMT       0.753   0.263            0.280    NaN
+rank by existing ports    0.638   0.146            0.182    NaN
+y_new_site    logit   states-held-out AUC: mean 0.878 (range 0.863-0.900)
+y_new_site    forest  states-held-out AUC: mean 0.881 (range 0.868-0.903)
+y_first_site  logit   states-held-out AUC: mean 0.822 (range 0.799-0.859)
+y_first_site  forest  states-held-out AUC: mean 0.822 (range 0.798-0.858)
+2026 partial year: base rate 17.0%
+  Model A AUC: 0.883
+  Model B AUC (counties with no large site): 0.764
+
+Target A: odds ratio per 1 SD (sorted)
+                        odds_ratio  ci_low  ci_high  p_value
+log_fwy_vmt                  6.582   2.728   15.880    0.000
+log_pop                      3.443   2.722    4.354    0.000
+log_ports_per_1k_bev         1.275   1.060    1.532    0.010
+state_new_large_per_1m       1.257   1.165    1.356    0.000
+log_dcfc_ports               1.153   0.823    1.616    0.407
+bev_per_1k                   1.152   1.021    1.299    0.022
+log_interstate_miles         1.108   0.959    1.280    0.164
+log_ports_50mi               1.096   0.967    1.242    0.151
+log_dist_large_dcfc          1.079   0.957    1.218    0.214
+ev_incentives                1.064   0.952    1.190    0.272
+elec_price_c_kwh             1.058   0.981    1.142    0.143
+pop_growth                   1.053   0.974    1.139    0.195
+log_large_sites              1.044   0.844    1.291    0.690
+log_new_large_t              0.909   0.836    0.988    0.025
+tesla_share                  0.887   0.804    0.978    0.016
+log_density                  0.839   0.680    1.035    0.101
+has_freeway                  0.216   0.098    0.474    0.000
+Lasso kept 8 of 17 features: ['log_pop', 'bev_per_1k', 'elec_price_c_kwh', 'ev_incentives', 'log_fwy_vmt', 'log_interstate_miles', 'log_dcfc_ports', 'state_new_large_per_1m']
+Random forest permutation importance (AUC drop), top 5: {'log_pop': 0.072, 'log_fwy_vmt': 0.035, 'log_dcfc_ports': 0.009, 'log_interstate_miles': 0.006, 'bev_per_1k': 0.003}
+
+Target B: odds ratio per 1 SD (sorted)
+                        odds_ratio  ci_low  ci_high  p_value
+log_fwy_vmt                  3.370   1.058   10.735    0.040
+log_pop                      2.275   1.756    2.948    0.000
+state_new_large_per_1m       1.333   1.194    1.488    0.000
+log_interstate_miles         1.316   1.098    1.577    0.003
+ev_incentives                1.236   1.068    1.431    0.004
+log_dcfc_ports               1.188   1.013    1.392    0.034
+log_density                  1.105   0.823    1.485    0.507
+log_dist_large_dcfc          1.101   0.915    1.324    0.310
+pop_growth                   1.065   0.941    1.205    0.319
+bev_per_1k                   1.058   0.908    1.233    0.468
+elec_price_c_kwh             1.049   0.952    1.155    0.335
+log_ports_per_1k_bev         1.000   0.824    1.213    0.997
+log_ports_50mi               0.923   0.771    1.103    0.378
+has_freeway                  0.370   0.126    1.080    0.069
+Lasso kept 10 of 17 features: ['log_pop', 'pop_growth', 'bev_per_1k', 'elec_price_c_kwh', 'ev_incentives', 'log_fwy_vmt', 'log_interstate_miles', 'log_dcfc_ports', 'log_dist_large_dcfc', 'state_new_large_per_1m']
+Random forest permutation importance (AUC drop), top 5: {'log_pop': 0.077, 'log_fwy_vmt': 0.034, 'log_interstate_miles': 0.011, 'ev_incentives': 0.009, 'bev_per_1k': 0.007}
+      per_port site_fixed   site_cost
+Low   $183,116         $0  $1,464,928
+Base  $232,700   $100,000  $1,961,600
+High  $305,607   $131,331  $2,576,186
+Budget $100M at $1.96M per site -> 50 sites, 50 counties, 15 states
+                 county_key  k  future_deployment
+      Wichita County, Texas  1               69.2
+      Hidalgo County, Texas  1               67.2
+      Randall County, Texas  1               66.5
+         Webb County, Texas  1               65.6
+    Jefferson County, Texas  1               65.4
+      Lubbock County, Texas  1               65.1
+        Tooele County, Utah  1               64.9
+        Ector County, Texas  1               64.8
+  Comanche County, Oklahoma  1               63.7
+      Midland County, Texas  1               63.1
+      El Paso County, Texas  1               62.9
+      Cameron County, Texas  1               61.6
+       Nueces County, Texas  1               61.5
+ Spokane County, Washington  1               61.4
+Doña Ana County, New Mexico  1               61.4
+
+Picks by state: {'TX': 19, 'WA': 8, 'UT': 4, 'AZ': 3, 'NM': 2, 'ID': 2, 'CO': 2, 'AR': 2}
+
+Figures written to /home/claude/evchargingmodel/reports/figures

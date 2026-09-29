@@ -1,6 +1,6 @@
 # DECISIONS
 Purpose: append-only Architecture Decision Record log. Never edit past entries; supersede them.
-Last updated: 2026-09-28
+Last updated: 2026-09-29
 
 ## ADR-0001: Governance files live in /docs
 - Date: 2026-09-28. Status: accepted.
@@ -56,3 +56,10 @@ Last updated: 2026-09-28
 - Date: 2026-09-28. Status: accepted.
 - Context: owner asked to keep building past Phase 0 without stopping for confirmation.
 - Decision: the master prompt's "stop after governance" gate is waived for this session; open questions are logged as `proposed` ADRs and flagged.
+
+## ADR-0012: Self-contained walkthrough for the assignment submission
+- Date: 2026-09-29. Status: accepted.
+- Context: the course requires well-documented code; the production modules are split across files.
+- Decision: `analysis/ev_charging_model_walkthrough.py` (py:percent chunks) re-implements the full model in one readable file from raw data, with an executed notebook copy. `tests/test_walkthrough.py` (RUN_SLOW=1) asserts it reproduces the pipeline's test AUCs exactly.
+- Alternatives: import the package (less readable for graders); notebook only (harder to diff and test).
+- Consequences: two implementations of the same logic; the reproduction test guards against drift. Any method change must be made in both.

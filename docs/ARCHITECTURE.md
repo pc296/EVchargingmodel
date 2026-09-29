@@ -19,6 +19,7 @@ src/evcharge/optimize.py  budget-constrained selection (MILP, greedy check)
              ▼
 scripts/run_pipeline.py   orchestrates all of the above, writes data/processed/*
 R/cross_check.R           refits models in R, compares with Python (reports/r_cross_check.md)
+analysis/                 submission walkthrough (.py chunks + executed .ipynb), mirrors src/ logic
 tests/                    pytest: unit (scoring, optimizer, cost, io, geo) + pipeline output checks
              ▼
 streamlit_app.py          UI: sliders, budget, map (plotly), ranked table, downloads

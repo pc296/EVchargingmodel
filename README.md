@@ -8,6 +8,7 @@ County-level screen for where an IONNA-style DC fast-charging network should bui
 - `src/evcharge/` pipeline and app logic: loaders (`io.py`), spatial join (`geo.py`), county-year panel (`panel.py`), models (`model.py`), cost scenarios (`cost.py`), scores (`scoring.py`), budget optimizer (`optimize.py`).
 - `scripts/run_pipeline.py` rebuilds everything in `data/processed/` from `data/raw/`.
 - `R/cross_check.R` refits the models in R (glmnet, pROC); results in `reports/r_cross_check.md`.
+- `analysis/ev_charging_model_walkthrough.py` (and `.ipynb`): the whole model in one annotated file, for readers and graders. Figures in `reports/figures/`.
 - `docs/` governance and method. Start with [docs/GOVERNANCE.md](docs/GOVERNANCE.md) and [docs/METHODOLOGY.md](docs/METHODOLOGY.md).
 
 ## Run locally

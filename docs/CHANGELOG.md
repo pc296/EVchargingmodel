@@ -3,6 +3,8 @@ Purpose: human-readable, reverse-chronological record of every meaningful change
 Last updated: 2026-09-28
 
 ## [Unreleased]
+### Added
+- Submission walkthrough: `analysis/ev_charging_model_walkthrough.py` (12 annotated chunks) and executed notebook; figures in `reports/figures/`; full run output in `reports/walkthrough_output.txt`; reproduction test (ADR-0012).
 
 ## [0.1.0] - 2026-09-28
 Save point: first deployed version.
