@@ -123,12 +123,12 @@ def run_target(panel: pd.DataFrame, target: str) -> dict:
     coef["odds_ratio_per_sd"] = np.exp(coef["coef"])
     out["logit_coefficients"] = coef.drop(index="const").round(4).to_dict(orient="index")
     lasso_coef = fitted["lasso"][-1].coef_[0]
-    out["lasso_coefficients"] = dict(zip(FEATURES, np.round(lasso_coef, 4).tolist()))
+    out["lasso_coefficients"] = dict(zip(FEATURES, np.round(lasso_coef, 4).tolist(), strict=True))
     out["lasso_C"] = float(fitted["lasso"][-1].C_[0])
 
     imp = permutation_importance(fitted["forest"], Xte, yte, scoring="roc_auc", n_repeats=5,
                                  random_state=SEED, n_jobs=-1)
-    out["forest_importance"] = dict(zip(FEATURES, np.round(imp.importances_mean, 4).tolist()))
+    out["forest_importance"] = dict(zip(FEATURES, np.round(imp.importances_mean, 4).tolist(), strict=True))
 
     # Calibration table (deciles) for the logit on the test year.
     p = fitted["logit"].predict_proba(Xte)[:, 1]

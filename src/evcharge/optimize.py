@@ -43,7 +43,7 @@ def select_milp(cand: pd.DataFrame, budget: float, time_limit: float = 10.0) -> 
     if n == 0 or budget < cand["cost"].min():
         return cand.iloc[0:0]
     cand = cand.reset_index(drop=True)
-    pos = {(f, k): i for i, (f, k) in enumerate(zip(cand["fips"], cand["k"]))}
+    pos = {(f, k): i for i, (f, k) in enumerate(zip(cand["fips"], cand["k"], strict=True))}
     order = [(i, pos[(f, k - 1)]) for (f, k), i in pos.items() if k > 1 and (f, k - 1) in pos]
     A = lil_matrix((1 + len(order), n))
     A[0, :] = cand["cost"].values

@@ -73,10 +73,10 @@ def build_panel() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     pop_w = pop.pivot(index="fips", columns="year", values="pop")
     pop_w[SNAPSHOT_YEAR] = pop_w[2025]
     pop_prev = pop_w.shift(axis=1)
-    panel["pop"] = [pop_w.at[f, y] for f, y in zip(panel["fips"], panel["year"])]
+    panel["pop"] = [pop_w.at[f, y] for f, y in zip(panel["fips"], panel["year"], strict=True)]
     panel["pop_growth"] = [
         (pop_w.at[f, y] / pop_prev.at[f, y] - 1) if y > 2020 else np.nan
-        for f, y in zip(panel["fips"], panel["year"])
+        for f, y in zip(panel["fips"], panel["year"], strict=True)
     ]
     panel.loc[panel["year"] == SNAPSHOT_YEAR, "pop_growth"] = panel.loc[
         panel["year"] == 2025, "pop_growth"].values
@@ -89,7 +89,7 @@ def build_panel() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         (s, t): int(((inc["state"] == s) & ((inc["enacted_year"] <= t) | inc["enacted_year"].isna())).sum())
         for s in keys["state"].unique() for t in YEARS + [SNAPSHOT_YEAR]
     }
-    panel["ev_incentives"] = [inc_counts[(s, t)] for s, t in zip(panel["state"], panel["year"])]
+    panel["ev_incentives"] = [inc_counts[(s, t)] for s, t in zip(panel["state"], panel["year"], strict=True)]
 
     panel["bev_est"] = panel["bev_per_1k"] * panel["pop"] / 1000
     panel["pop_density"] = panel["pop"] / panel["area_sqmi"]

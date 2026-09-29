@@ -18,7 +18,8 @@ src/evcharge/scoring.py   normalized features -> Net Opportunity + Future Deploy
 src/evcharge/optimize.py  budget-constrained selection (MILP, greedy check)
              ▼
 scripts/run_pipeline.py   orchestrates all of the above, writes data/processed/*
-R/cross_check.R           refits models in R, compares with Python (reports/)
+R/cross_check.R           refits models in R, compares with Python (reports/r_cross_check.md)
+tests/                    pytest: unit (scoring, optimizer, cost, io, geo) + pipeline output checks
              ▼
 streamlit_app.py          UI: sliders, budget, map (plotly), ranked table, downloads
 ```
@@ -27,6 +28,7 @@ streamlit_app.py          UI: sliders, budget, map (plotly), ranked table, downl
 - The app never reads `data/raw/`; it reads `data/processed/app_counties.parquet`, `data/processed/model_metrics.json`, and the county GeoJSON.
 - All modeling happens offline; the app only re-weights precomputed, normalized features and runs the optimizer (fast, under 1 second for ~3,100 counties).
 - R is not a runtime dependency of the app.
+- Pipeline-only packages (statsmodels, geopandas, numbers-parser) are in requirements-dev.txt; `model.py` imports statsmodels lazily so the app can import feature labels without it.
 
 ## External dependencies
 pandas, numpy, scikit-learn, statsmodels, scipy (MILP), geopandas/shapely (pipeline only), plotly, streamlit, pyarrow, numbers-parser (pipeline only). R: glmnet, pROC.

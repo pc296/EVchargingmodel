@@ -18,3 +18,20 @@ Format: date, what happened, why, durable takeaway.
 - What: Deliverable 2 described the score as the dependent variable.
 - Why: model output and training label were conflated.
 - Takeaway: every supervised model states its label, the time it is observed, and the time features are observed.
+
+## 2026-09-28: Legacy county codes in the team's county file
+- What: 4 FIPS codes (Valdez-Cordova, Wade Hampton, Shannon SD, Bedford City VA) no longer exist; joins to 2025 population failed.
+- Why: the county list predated 2013-2019 geography changes.
+- Takeaway: crosswalk to the population file's vintage first; assert 3,144 unique counties after every join.
+
+## 2026-09-28: Name joins broke on capitalization
+- What: 42 counties ("Baltimore city" vs "Baltimore City", "LaSalle" vs "La Salle") failed to match.
+- Takeaway: join on FIPS wherever possible; when names are unavoidable, normalize case and spacing and fail loudly on any miss.
+
+## 2026-09-28: Simplified boundaries can drop tiny counties
+- What: Falls Church city, VA had an empty polygon in the 10m boundary file, giving a NaN centroid.
+- Takeaway: check for empty geometries after loading boundaries; keep a documented fallback.
+
+## 2026-09-28: A reconciliation test caught out-of-scope stations
+- What: 2 Puerto Rico stations were silently dropped by the spatial join.
+- Takeaway: keep reconciliation tests that compare row counts before and after joins, scoped explicitly.
