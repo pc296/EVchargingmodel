@@ -40,3 +40,8 @@ Format: date, what happened, why, durable takeaway.
 - What: the first chunk failed on `import numbers_parser`; Colab also has none of the repo's data files.
 - Why: the file was tested only inside the repo, where dev requirements and data exist.
 - Takeaway: shared notebooks carry their own setup chunk (install missing packages, fetch data) and are tested from an empty folder.
+
+## 2026-09-29: Figures in docs computed on the wrong subset
+- What: docs said 86 stations lacked open dates (true for all DC rows; only 1 of the 15,939 stations used), 30% of incentives lacked dates (true for all EV laws; 62% of the 292 incentive records used), and IONNA averaged 8.4 ports (8.46 on the 180 sites used).
+- Why: counts were taken during exploration, before filters were final, and never re-derived.
+- Takeaway: every figure in a document is regenerated from the final processed data by script before release.

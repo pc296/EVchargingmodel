@@ -221,7 +221,7 @@ print(f"EV incentive records used: {len(ev_inc):,}")
 # ### 2e. Charging stations (AFDC, snapshot 2026-09-22)
 # We keep public stations with at least one DC fast port that are open or temporarily
 # unavailable. A site with 4+ DC ports is a "large" site, the format IONNA builds (its current
-# sites average 8.4 ports). Opening dates let us rebuild supply for any past year.
+# sites average 8.5 ports). Opening dates let us rebuild supply for any past year.
 
 # %%
 st = pd.read_csv(RAW / "afdc_stations_2026-09-22.csv", low_memory=False)
@@ -628,7 +628,7 @@ fig.savefig(FIG / "04_target_A_odds_ratios.png", dpi=160)
 
 # %% [markdown]
 # ## 10. Build cost scenarios
-# Default site: 8 DC ports (IONNA's current sites average 8.4). Three scenarios from published data:
+# Default site: 8 DC ports (IONNA's current sites average 8.5). Three scenarios from published data:
 # * **Low**: median cost per port across 330 NEVI award applications, all-in (Paren, Oct 2024):
 #   $183,116/port.
 # * **Base**: NREL per-port equipment ($141,900) + installation ($90,800) at 350 kW, plus a

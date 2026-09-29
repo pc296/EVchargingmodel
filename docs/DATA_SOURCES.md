@@ -1,16 +1,16 @@
 # DATA SOURCES
 Purpose: every input file, where it came from, its vintage, and known issues.
-Last updated: 2026-09-28
+Last updated: 2026-09-29
 
 | File (data/raw or data/external) | Source | Vintage | Geography | Used for | Known issues |
 |---|---|---|---|---|---|
-| afdc_stations_2026-09-22.csv | U.S. DOE AFDC station locator download | Snapshot 2026-09-22 | Station (lat/lon) | Supply by county and year, IONNA sites, posted prices | Only stations that exist today; closed stations missing (past supply undercounted). 86 DC stations lack open dates (treated as pre-2020). Pricing is free text; 642 DC stations have a parseable $/kWh. |
+| afdc_stations_2026-09-22.csv | U.S. DOE AFDC station locator download | Snapshot 2026-09-22 | Station (lat/lon) | Supply by county and year, IONNA sites, posted prices | Only stations that exist today; closed stations missing (past supply undercounted). 86 DC rows lack an open date, but 85 are planned stations excluded from the analysis; 1 station used lacks a date (treated as pre-2020). Pricing is free text; 642 DC stations have a parseable $/kWh. |
 | census_pop_2020_2025.xlsx | U.S. Census Bureau, Vintage 2025 county estimates (CO-EST2025-POP) | 2020-2025 | County | Population, growth, density | None material. |
-| hpms_2024_road_utilization.csv | FHWA HPMS 2024 (data.transportation.gov), aggregated by team | 2024 | County | Freeway vehicle-miles, interstate miles | Covers F_SYSTEM 1-2 only. 1,377 counties have no such roads (set to 0, not imputed). CT uses legacy counties in HPMS. |
+| hpms_2024_road_utilization.csv | FHWA HPMS 2024 (data.transportation.gov), aggregated by team | 2024 | County | Freeway vehicle-miles, interstate miles | Covers F_SYSTEM 1-2 only. 1,377 counties have no such roads (set to 0, not imputed); 1,379 after adding the 2 Alaska areas split from Valdez-Cordova. CT uses legacy counties in HPMS. |
 | hpms_2024_road_utilization_imputed.csv | Team file derived from above | 2024 | County | CT planning-region traffic only (statewide total allocated by population share) | Neighbor imputation of zero counties in this file is not used (see ADR-0006). |
 | afdc_registrations_by_state.csv | AFDC Vehicle Registration Counts by State | Latest AFDC release in folder (labelled 2025 in team log; confirm year) | State | BEV per 1,000 residents | Rounded to nearest 100. Single year only; no county detail. |
 | eia_state_profile_2024.csv | EIA State Electricity Profiles 2024 | 2024 | State | Electricity price | All-sector average, not commercial rate. |
-| afdc_laws_incentives.numbers | AFDC Laws and Incentives download | Snapshot 2026-09-22 | State | Count of EV incentives in force by year | Current records only; repealed incentives mostly absent. 30% lack an enacted date (treated as in force for all years). |
+| afdc_laws_incentives.numbers | AFDC Laws and Incentives download | Snapshot 2026-09-22 | State | Count of EV incentives in force by year | Current records only; repealed incentives mostly absent. Of the 292 EV incentive records used, 181 (62%) lack an enacted date and are treated as in force for all years, so this variable changes little over time. |
 | afdc_ionna_dcfc_by_county_prior.csv | Team file (Deliverable 2) | 2026-09 | County | County name/FIPS crosswalk; reconciliation check | Uses 4 legacy FIPS (crosswalked in io.py). Port totals differ slightly from the spatial join (75,594 vs 77,189 DC ports) because the join also counts temporarily unavailable stations. |
 | us_atlas_2023_counties-10m.json | npm `@severo_bo/us-atlas-2023` (Census GENZ2023 cartographic boundaries as TopoJSON) | 2023 | County polygons | Spatial join, centroids, areas, maps | Simplified; Falls Church city, VA has no polygon (centroid set manually; its stations fall into neighbors). 16 coastal stations snapped to nearest county within 5 km. |
 

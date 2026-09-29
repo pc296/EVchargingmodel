@@ -8,7 +8,7 @@ Sources (see docs/DATA_SOURCES.md):
   176 kWh per port per day. Stations with demand charges: $0.43/kWh levelized vs $0.31/kWh without.
 - Paren (Oct 31, 2024), analysis of 330 NEVI award applications: median project $802,267,
   top quartile $1,053,624, median $183,116 per port, mean $192,614 per port.
-- AFDC station file: IONNA sites average 8.4 DC ports (180 open sites, snapshot 2026-09-22).
+- AFDC station file: IONNA sites average 8.46 DC ports (180 open sites, snapshot 2026-09-22).
 """
 
 from __future__ import annotations

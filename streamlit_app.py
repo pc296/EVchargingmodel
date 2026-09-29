@@ -42,7 +42,7 @@ scenario = sb.selectbox("Build cost scenario", list(cost.SCENARIOS), index=1,
                         help="Low: median NEVI award per port. Base: NREL 350 kW per-port cost "
                              "plus transformer. High: Base x NEVI top-quartile ratio.")
 ports = sb.slider("DC ports per site", 4, 16, cost.DEFAULT_PORTS,
-                  help="IONNA's current sites average 8.4 ports.")
+                  help="IONNA's current sites average 8.5 ports.")
 per_port_default = float(cost.SCENARIOS[scenario].per_port)
 per_port = sb.number_input("Cost per port ($)", 50_000.0, 600_000.0, round(per_port_default, -2),
                            1_000.0)

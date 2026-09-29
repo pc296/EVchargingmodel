@@ -4,6 +4,8 @@ Last updated: 2026-09-28
 
 ## [Unreleased]
 ### Fixed
+- Corrected three figures in docs (open-date gaps, incentive-date gaps, IONNA mean ports) found while building the traceability report.
+### Fixed
 - Walkthrough runs on Google Colab: new chunk 0 installs numbers-parser and clones the public repo for data; tested from an empty folder.
 ### Added
 - Submission walkthrough: `analysis/ev_charging_model_walkthrough.py` (12 annotated chunks) and executed notebook; figures in `reports/figures/`; full run output in `reports/walkthrough_output.txt`; reproduction test (ADR-0012).

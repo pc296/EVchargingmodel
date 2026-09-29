@@ -33,7 +33,7 @@ Each input is converted to a percentile rank across counties (0 to 1), so weight
 - **Future Deployment** = Net Opportunity x (1 - penalty x saturation), where saturation is the average percentile of DC ports per 1,000 EVs and DC ports within 50 miles. Default penalty 0.5.
 
 ## 4. Build cost
-Default site: 8 DC ports (IONNA's current sites average 8.4).
+Default site: 8 DC ports (IONNA's current sites average 8.5).
 | Scenario | Per port | Per site fixed | 8-port site | Basis |
 |---|---|---|---|---|
 | Low | $183,116 | $0 | $1.46M | Median per-port cost across 330 NEVI awards (Paren, 2024), all-in |
@@ -51,6 +51,6 @@ Annual energy revenue = ports x kWh per port per day x 365 x price. Energy cost 
 ## 7. Known limitations
 - EV registrations are state totals spread by population, so EV adoption does not vary within a state. County-level registration data (Atlas EV Hub) and Census demographics are the planned fix.
 - Electricity price is the all-sector state average; the commercial rate and demand charges matter more.
-- Traffic covers interstates and other freeways only; 1,377 counties have none (true zeros). Connecticut's 9 planning regions use an allocated statewide total (flagged).
+- Traffic covers interstates and other freeways only; 1,379 counties have none (true zeros: 1,377 in HPMS plus 2 Alaska areas created in 2019). Connecticut's 9 planning regions use an allocated statewide total (flagged).
 - Utilization is assumed equal across counties; no public county-level usage data exists.
 - Recommendations are at county level; marker positions are county centroids.
