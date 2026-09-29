@@ -2,7 +2,7 @@
 
 County-level screen for where an IONNA-style DC fast-charging network should build next, under a capital budget. Duke Data Analytics final project (Cronin, Mei, Singh).
 
-**App:** Streamlit (`streamlit_app.py`). Users set a budget, cost scenario, and scoring weights; the app returns a map and a ranked, downloadable list of recommended counties.
+**Live app:** https://evchargingmodel-ui5fwbrdxjotcghzbovdvf.streamlit.app/ (Streamlit, `streamlit_app.py`). Users set a budget, cost scenario, and scoring weights; the app returns a map and a ranked, downloadable list of recommended counties.
 
 ## What is inside
 - `src/evcharge/` pipeline and app logic: loaders (`io.py`), spatial join (`geo.py`), county-year panel (`panel.py`), models (`model.py`), cost scenarios (`cost.py`), scores (`scoring.py`), budget optimizer (`optimize.py`).

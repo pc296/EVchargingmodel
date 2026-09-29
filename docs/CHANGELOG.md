@@ -3,6 +3,11 @@ Purpose: human-readable, reverse-chronological record of every meaningful change
 Last updated: 2026-09-28
 
 ## [Unreleased]
+
+## [0.1.0] - 2026-09-28
+Save point: first deployed version.
+### Added
+- Deployed to Streamlit Community Cloud: https://evchargingmodel-ui5fwbrdxjotcghzbovdvf.streamlit.app/ (map verified: 3,144 counties, IONNA and recommended markers render).
 ### Added
 - County-year panel 2020-2025 rebuilt from AFDC open dates; spatial join to 2023 Census counties (ADR-0004, 0005).
 - Models A and B (logistic, Lasso, random forest) with temporal test, state-held-out CV, 2026 partial-year check.
