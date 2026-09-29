@@ -1,6 +1,6 @@
 {
- "commit": "344321bb9e584b13cc81f6541d96f7419be7d476",
- "commit_date": "2026-09-29 13:29:00 -0400",
+ "commit": "fc302fa28597c7e06ce1cdb741e14f9e897ce750",
+ "commit_date": "2026-09-29 13:48:02 -0400",
  "files": {
   "us_atlas_2023_counties-10m.json": {
    "sha256": "7d9efcb8fe58856d9fd955f7512e14901cfb9bffd4bd1353927d71169e24b4a7",
@@ -129,8 +129,8 @@
     "rank_by_population": {
      "precision_at_n_positives": 0.6243169398907104,
      "precision_ranks_101_500": 0.6975,
-     "roc_auc": 0.8520682108582769,
-     "pr_auc": 0.711630614024052,
+     "roc_auc": 0.8520687772431106,
+     "pr_auc": 0.711630404237179,
      "brier": null,
      "precision_at_100": 0.98,
      "base_rate": 0.23282442748091603,
@@ -140,8 +140,8 @@
     "rank_by_freeway_vmt": {
      "precision_at_n_positives": 0.6215846994535519,
      "precision_ranks_101_500": 0.68,
-     "roc_auc": 0.8411534087304825,
-     "pr_auc": 0.7037447931626342,
+     "roc_auc": 0.8434314085311149,
+     "pr_auc": 0.6985074593673782,
      "brier": null,
      "precision_at_100": 0.97,
      "base_rate": 0.23282442748091603,
@@ -150,9 +150,9 @@
     },
     "rank_by_existing_ports": {
      "precision_at_n_positives": 0.6379781420765027,
-     "precision_ranks_101_500": 0.6775,
-     "roc_auc": 0.84742158968364,
-     "pr_auc": 0.707441569283504,
+     "precision_ranks_101_500": 0.68,
+     "roc_auc": 0.8476419133839,
+     "pr_auc": 0.6957221542886949,
      "brier": null,
      "precision_at_100": 0.98,
      "base_rate": 0.23282442748091603,
@@ -418,8 +418,8 @@
     "rank_by_population": {
      "precision_at_n_positives": 0.2937062937062937,
      "precision_ranks_101_500": 0.135,
-     "roc_auc": 0.7716193106549019,
-     "pr_auc": 0.2784762405444657,
+     "roc_auc": 0.771619310654902,
+     "pr_auc": 0.27847532541734654,
      "brier": null,
      "precision_at_50": 0.4,
      "base_rate": 0.07586206896551724,
@@ -429,8 +429,8 @@
     "rank_by_freeway_vmt": {
      "precision_at_n_positives": 0.27972027972027974,
      "precision_ranks_101_500": 0.15,
-     "roc_auc": 0.7529806588359974,
-     "pr_auc": 0.2633207027424276,
+     "roc_auc": 0.7458491565839442,
+     "pr_auc": 0.2549864584313949,
      "brier": null,
      "precision_at_50": 0.38,
      "base_rate": 0.07586206896551724,
@@ -438,10 +438,10 @@
      "positives": 143
     },
     "rank_by_existing_ports": {
-     "precision_at_n_positives": 0.18181818181818182,
-     "precision_ranks_101_500": 0.1275,
-     "roc_auc": 0.6376763305580755,
-     "pr_auc": 0.14580823538019128,
+     "precision_at_n_positives": 0.21678321678321677,
+     "precision_ranks_101_500": 0.1325,
+     "roc_auc": 0.6392921085802832,
+     "pr_auc": 0.13334346904333363,
      "brier": null,
      "precision_at_50": 0.26,
      "base_rate": 0.07586206896551724,
