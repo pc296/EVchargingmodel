@@ -50,3 +50,8 @@ Format: date, what happened, why, durable takeaway.
 - What: the app's "Exact optimizer" checkbox did nothing (one cost per site); baseline ranks broke ties by row order, moving one baseline AUC by 0.007.
 - Why: the control was added for a case the app never produces; the rank method was copied from a tie-breaking use.
 - Takeaway: every UI control needs a test or a visible effect; evaluation baselines use tie-neutral ranks.
+
+## 2026-09-29: County-types map rendered blank on the live app
+- What: the Explore tab map showed only state outlines. Each cluster trace used a constant z, so zmin equaled zmax and Plotly could not assign a fill.
+- Why: the earlier live check counted county shapes but did not check that they had a fill color, and local screenshots could not render maps at all.
+- Takeaway: verify maps on the deployed app by checking rendered fill colors, not just element counts.

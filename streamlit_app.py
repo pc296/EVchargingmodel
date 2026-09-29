@@ -258,7 +258,7 @@ with tab_explore:
     figc = go.Figure()
     for i, c in enumerate(cats):
         d = scored[scored["cluster"] == c]
-        figc.add_trace(go.Choropleth(geojson=geo, locations=d["fips"], z=np.full(len(d), i),
+        figc.add_trace(go.Choropleth(geojson=geo, locations=d["fips"], z=np.ones(len(d)), zmin=0, zmax=1,
                                      featureidkey="id", showscale=False, name=c, showlegend=True,
                                      colorscale=[[0, palette[i]], [1, palette[i]]],
                                      marker_line_width=0, text=d["county_key"],

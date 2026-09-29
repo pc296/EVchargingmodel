@@ -4,6 +4,8 @@ Last updated: 2026-09-28
 
 ## [Unreleased]
 ### Fixed
+- County-types map rendered blank: each trace had a constant value, so Plotly's color range collapsed; set zmin/zmax explicitly.
+### Fixed
 - Baseline rankings now give tied values their average rank (was row order); Target B freeway baseline AUC 0.753 -> 0.746, Target A 0.841 -> 0.843. Model metrics unchanged.
 - Removed the app's "Exact optimizer" checkbox, which had no effect because every site has the same cost; per-port cost input no longer rounded.
 ### Added
