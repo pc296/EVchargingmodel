@@ -17,10 +17,34 @@ from evcharge import cost, optimize, scoring  # noqa: E402
 from evcharge.model import FEATURE_LABELS  # noqa: E402
 
 PROC = ROOT / "data" / "processed"
-SEQ = [[0, "#cde2fb"], [0.25, "#86b6ef"], [0.5, "#3987e5"], [0.75, "#1c5cab"], [1, "#0d366b"]]
-C_PICK, C_IONNA, C_OTHER, INK2 = "#eb6834", "#1baf7a", "#898781", "#52514e"
+# Palette: IONNA public-site colors (cream, sand, deep teal, orange, muted teal, sage). The
+# sequential ramp is a single-hue teal scale validated for monotone lightness and a light end
+# that clears 2:1 against the cream background. No IONNA logos, images or taglines are used.
+INK, INK2, CREAM, SAND = "#0C272E", "#416D78", "#F9F5EE", "#F2E9DB"
+SEQ = [[0, "#86B0AC"], [0.25, "#5F9196"], [0.5, "#416D78"], [0.75, "#24505A"], [1, "#0C272E"]]
+C_PICK, C_IONNA_FILL, C_OTHER = "#FF5C00", "#FFFFFF", "#898781"
+CLUSTER_COLORS = ["#2a78d6", "#FF5C00", "#1baf7a", "#eda100", "#e87ba4"]  # adjacent-pair validated
+FONT = "Satoshi, Helvetica, Arial, sans-serif"
 
 st.set_page_config(page_title="EV Charging Expansion Planner", layout="wide")
+
+# Satoshi is loaded from the Fontshare API, as the ITF Free Font License permits for websites and
+# applications. The font files are not stored in this repository (the license bars redistribution).
+st.markdown("""
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
+<style>
+html, body, .stApp, .stMarkdown, p, li, label, input, textarea, select, button, table, th, td,
+[data-testid="stMetricValue"], [data-testid="stMetricLabel"], [data-testid="stCaptionContainer"],
+[data-testid="stSidebar"], [data-baseweb="tab"] { font-family: 'Satoshi', Helvetica, Arial, sans-serif; }
+h1, h2, h3, h4 { font-family: 'Satoshi', Helvetica, Arial, sans-serif !important; font-weight: 900 !important;
+  letter-spacing: -0.01em; color: #0C272E; }
+[data-testid="stMetricValue"] { font-weight: 700; }
+[data-baseweb="tab-highlight"] { background-color: #FF5C00 !important; }
+.disclaimer { font-size: 0.85rem; color: #416D78; border-left: 3px solid #FF5C00; padding: 2px 0 2px 10px;
+  margin: -6px 0 14px 0; }
+</style>
+""", unsafe_allow_html=True)
 
 
 @st.cache_data
@@ -92,6 +116,8 @@ picks["rank"] = np.arange(1, len(picks) + 1)
 
 # ---------------- Header ----------------
 st.title("EV Charging Expansion Planner")
+st.markdown('<div class="disclaimer">Independent student project (Duke University). Not affiliated with, '
+            'sponsored by, or endorsed by IONNA. Uses only public data.</div>', unsafe_allow_html=True)
 st.caption("County-level screen for new DC fast-charging sites, built for an IONNA-style network. "
            "Scores rank counties; they are not revenue forecasts. See the Method tab.")
 
@@ -129,7 +155,7 @@ with tab_rec:
     if show_ionna:
         io_ = stations[stations["is_ionna"]]
         fig.add_trace(go.Scattergeo(lat=io_["lat"], lon=io_["lon"], mode="markers",
-                                    marker=dict(size=7, color=C_IONNA, line=dict(width=1, color="white")),
+                                    marker=dict(size=7, color=C_IONNA_FILL, line=dict(width=1.5, color=INK)),
                                     name="Existing IONNA sites", text=io_["name"],
                                     hovertemplate="%{text}<extra></extra>"))
     if len(picks):
@@ -138,12 +164,13 @@ with tab_rec:
         fig.add_trace(go.Scattergeo(
             lat=p1["cent_lat"], lon=p1["cent_lon"], mode="markers",
             marker=dict(size=8 + 4 * p1["fips"].map(n_by), color=C_PICK, symbol="diamond",
-                        line=dict(width=1.5, color="white")),
+                        line=dict(width=1.5, color=INK)),
             name="Recommended (county centroid)", text=p1["county_key"],
             customdata=p1["fips"].map(n_by),
             hovertemplate="<b>%{text}</b><br>New sites: %{customdata}<extra></extra>"))
     fig.update_geos(scope="usa", showlakes=False, bgcolor="rgba(0,0,0,0)")
-    fig.update_layout(height=560, margin=dict(l=0, r=0, t=0, b=0),
+    fig.update_layout(height=560, margin=dict(l=0, r=0, t=0, b=0), paper_bgcolor="rgba(0,0,0,0)",
+                      font=dict(family=FONT, color=INK),
                       legend=dict(orientation="h", y=-0.02, x=0))
     st.plotly_chart(fig, width="stretch")
     st.caption(f"Selection method: {method}. Markers sit at county centroids; site-level "
@@ -240,15 +267,17 @@ with tab_model:
     sig = coef["p_value"] < 0.05
     fig = go.Figure(go.Scatter(
         x=coef["odds_ratio_per_sd"], y=coef.index, mode="markers",
-        marker=dict(size=10, color=np.where(sig, "#2a78d6", "#b7d3f6"),
-                    line=dict(width=1, color="#1c5cab")),
+        marker=dict(size=10, color=np.where(sig, INK, "#A1C6C2"),
+                    line=dict(width=1, color=INK)),
         error_x=dict(type="data", symmetric=False, array=hi - coef["odds_ratio_per_sd"],
-                     arrayminus=coef["odds_ratio_per_sd"] - lo, color="#86b6ef", thickness=2),
+                     arrayminus=coef["odds_ratio_per_sd"] - lo, color="#86B0AC", thickness=2),
         customdata=np.c_[lo, hi, coef["p_value"]],
         hovertemplate="%{y}<br>OR %{x:.2f} (95% CI %{customdata[0]:.2f}-%{customdata[1]:.2f})"
                       "<br>p = %{customdata[2]:.3f}<extra></extra>"))
     fig.add_vline(x=1, line_color=INK2, line_width=1)
     fig.update_layout(height=520, margin=dict(l=0, r=0, t=40, b=0), xaxis_type="log",
+                      paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+                      font=dict(family=FONT, color=INK),
                       xaxis_title="Odds ratio per 1 SD increase (log scale; 1 = no effect)",
                       title="What drives the prediction (solid = p < 0.05, bars = 95% CI)")
     st.plotly_chart(fig, width="stretch")
@@ -257,18 +286,21 @@ with tab_model:
 with tab_explore:
     st.subheader("County types (k-means on current conditions)")
     cats = sorted(scored["cluster"].unique())
-    palette = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4"]
+    focus = st.selectbox("Highlight one county type", ["All types"] + cats,
+                         help="Highlighting one type at a time keeps the map readable for people "
+                              "with color vision deficiency.")
     figc = go.Figure()
     for i, c in enumerate(cats):
         d = scored[scored["cluster"] == c]
+        color = CLUSTER_COLORS[i] if focus in ("All types", c) else "#DDD6CA"
         figc.add_trace(go.Choropleth(geojson=geo, locations=d["fips"], z=np.full(len(d), i),
                                      featureidkey="id", showscale=False, name=c, showlegend=True,
-                                     colorscale=[[0, palette[i]], [1, palette[i]]],
+                                     colorscale=[[0, color], [1, color]],
                                      marker_line_width=0, text=d["county_key"],
                                      hovertemplate=f"%{{text}}<br>{c}<extra></extra>"))
-    figc.update_geos(scope="usa")
-    figc.update_layout(height=520, margin=dict(l=0, r=0, t=0, b=0),
-                       legend=dict(orientation="h", y=-0.02))
+    figc.update_geos(scope="usa", bgcolor="rgba(0,0,0,0)")
+    figc.update_layout(height=520, margin=dict(l=0, r=0, t=0, b=0), paper_bgcolor="rgba(0,0,0,0)",
+                       font=dict(family=FONT, color=INK), legend=dict(orientation="h", y=-0.02))
     st.plotly_chart(figc, width="stretch")
     summary = scored.groupby("cluster").agg(
         counties=("fips", "size"), population_m=("pop", lambda s: s.sum() / 1e6),
@@ -284,4 +316,7 @@ with tab_explore:
 
 # ---------------- Method ----------------
 with tab_method:
+    st.info("Independent student project (Duke University). Not affiliated with, sponsored by, or "
+            "endorsed by IONNA. IONNA is named only as the example network being analyzed; station "
+            "data come from the U.S. DOE Alternative Fuels Data Center.")
     st.markdown((ROOT / "docs" / "METHODOLOGY.md").read_text())

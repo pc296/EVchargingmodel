@@ -63,3 +63,10 @@ Last updated: 2026-09-29
 - Decision: `analysis/ev_charging_model_walkthrough.py` (py:percent chunks) re-implements the full model in one readable file from raw data, with an executed notebook copy. `tests/test_walkthrough.py` (RUN_SLOW=1) asserts it reproduces the pipeline's test AUCs exactly.
 - Alternatives: import the package (less readable for graders); notebook only (harder to diff and test).
 - Consequences: two implementations of the same logic; the reproduction test guards against drift. Any method change must be made in both.
+
+## ADR-0013: Visual style drawn from IONNA's public site, without brand assets
+- Date: 2026-09-29. Status: proposed (on branch design/ionna-palette, awaiting owner approval).
+- Context: owner asked to match IONNA's font and colors, explicitly without the logo, at minimal risk.
+- Decision: Satoshi (ITF Free Font License: commercial web use allowed; loaded from the Fontshare API, font files never committed because the license bars redistribution). Colors observed on ionna.com: cream #F9F5EE, sand #F2E9DB, deep teal #0C272E, orange #FF5C00 (accent only; 2.85:1 on cream is too low for text), muted teal #416D78. Not used: logo, Swell display font, taglines, product names as branding, imagery, icon sets. Disclaimer of non-affiliation under the title and in the Method tab. Chart ramp and cluster colors validated with the dataviz palette validator; cluster map gets a highlight-one-type control because five hues cannot all pass all-pairs color-vision checks.
+- Alternatives: fully original palette (no association risk); copying Swell (license unknown).
+- Consequences: dependency on the Fontshare API (falls back to Helvetica/Arial if unavailable).

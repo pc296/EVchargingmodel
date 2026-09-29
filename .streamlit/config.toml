@@ -1,6 +1,7 @@
+# Colors follow the IONNA public site palette (observed 2026-09-29); no logos or brand assets used.
 [theme]
 base = "light"
-primaryColor = "#2a78d6"
-backgroundColor = "#fcfcfb"
-secondaryBackgroundColor = "#f3f2ee"
-textColor = "#0b0b0b"
+primaryColor = "#0C272E"
+backgroundColor = "#F9F5EE"
+secondaryBackgroundColor = "#F2E9DB"
+textColor = "#0C272E"

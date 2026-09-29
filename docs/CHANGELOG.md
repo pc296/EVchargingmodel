@@ -3,6 +3,8 @@ Purpose: human-readable, reverse-chronological record of every meaningful change
 Last updated: 2026-09-28
 
 ## [Unreleased]
+### Changed
+- App restyled with Satoshi and an IONNA-inspired palette; non-affiliation disclaimer; cluster map highlight control (ADR-0013).
 ### Fixed
 - Walkthrough runs on Google Colab: new chunk 0 installs numbers-parser and clones the public repo for data; tested from an empty folder.
 ### Added
