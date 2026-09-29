@@ -293,7 +293,7 @@ with tab_explore:
     for i, c in enumerate(cats):
         d = scored[scored["cluster"] == c]
         color = CLUSTER_COLORS[i] if focus in ("All types", c) else "#DDD6CA"
-        figc.add_trace(go.Choropleth(geojson=geo, locations=d["fips"], z=np.full(len(d), i),
+        figc.add_trace(go.Choropleth(geojson=geo, locations=d["fips"], z=np.ones(len(d)), zmin=0, zmax=1,
                                      featureidkey="id", showscale=False, name=c, showlegend=True,
                                      colorscale=[[0, color], [1, color]],
                                      marker_line_width=0, text=d["county_key"],
