@@ -42,3 +42,10 @@ def test_app_table():
     assert a[["p_new_site", "p_first_site"]].stack().between(0, 1).all()
     m = json.loads((io.PROCESSED / "model_metrics.json").read_text())
     assert m["A"]["test"]["logit"]["roc_auc"] > m["A"]["baselines"]["rank_by_population"]["roc_auc"]
+
+
+def test_labels_align_with_next_year():
+    p = pd.read_parquet(PANEL).set_index(["fips", "year"]).sort_index()
+    lab = p.loc[p["y_new_site"].notna()]
+    nxt = p["new_large_sites_t"].reindex([(f, y + 1) for f, y in lab.index]).values
+    assert ((nxt > 0).astype(float) == lab["y_new_site"].values).all()

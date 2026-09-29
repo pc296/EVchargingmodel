@@ -43,7 +43,7 @@ Default site: 8 DC ports (IONNA's current sites average 8.5).
 Not included: land, feeder or substation upgrades (NREL: $3M and $5M above 3 MW and 7 MW peak), regional construction cost differences. An optional grant share reduces net capex.
 
 ## 5. Budget-constrained selection
-Each county can receive up to *M* new sites. The *k*-th site in a county is worth score x decay^(existing IONNA sites + k - 1), so a second site is worth less than the first. The tool maximizes total value subject to total net capex within budget. With one cost per site, picking the highest values is exactly optimal; an integer program (SciPy MILP) is available when costs differ.
+Each county can receive up to *M* new sites. The *k*-th site in a county is worth score x decay^(existing IONNA sites + k - 1), so a second site is worth less than the first. The tool maximizes total value subject to total net capex within budget. The app uses one cost per site, so picking the highest values is exactly optimal. A value-per-dollar heuristic and an exact integer program (SciPy MILP) are implemented in optimize.py for future use with unequal (e.g., regional) costs, but the app does not call them today.
 
 ## 6. Site economics (indicative)
 Annual energy revenue = ports x kWh per port per day x 365 x price. Energy cost = kWh x (state retail price + demand-charge adder). Defaults: 176 kWh/port/day (NREL 2025, 4% capacity factor), state median posted DCFC price from AFDC (national median $0.48/kWh where a state has fewer than 10 priced stations), $0.12/kWh demand-charge adder (NREL). Excludes O&M, lease, fees and taxes.

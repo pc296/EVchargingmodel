@@ -44,7 +44,7 @@ scenario = sb.selectbox("Build cost scenario", list(cost.SCENARIOS), index=1,
 ports = sb.slider("DC ports per site", 4, 16, cost.DEFAULT_PORTS,
                   help="IONNA's current sites average 8.5 ports.")
 per_port_default = float(cost.SCENARIOS[scenario].per_port)
-per_port = sb.number_input("Cost per port ($)", 50_000.0, 600_000.0, round(per_port_default, -2),
+per_port = sb.number_input("Cost per port ($)", 50_000.0, 600_000.0, per_port_default,
                            1_000.0)
 incentive = sb.slider("Grant share of capex (%)", 0, 80, 0,
                       help="Optional. NEVI covered up to 80% of eligible costs; program status "
@@ -71,9 +71,6 @@ decay = sb.slider("Value of each extra site in a county", 0.1, 1.0, 0.5, 0.05,
                   help="0.5 = a second site is worth half the first. Existing IONNA sites count.")
 states = sb.multiselect("Limit to states", sorted(df["state"].unique()))
 min_pop = sb.number_input("Minimum county population", 0, 1_000_000, 0, 5_000)
-exact = sb.checkbox("Exact optimizer (slower)", value=False,
-                    help="Only matters when site costs differ; with one cost per site the "
-                         "ranking is already exact.")
 
 # ---------------- Scoring and selection ----------------
 if sum(weights.values()) == 0:
@@ -86,7 +83,7 @@ pool = scored[scored["pop"] >= min_pop]
 if states:
     pool = pool[pool["state"].isin(states)]
 cand = scoring.expand_candidates(pool, "score", unit_cost, max_sites, decay)
-picks, method = optimize.select(cand, budget_m * 1e6, exact)
+picks, method = optimize.select(cand, budget_m * 1e6)  # one cost per site: top-N is exact
 picks = picks.merge(scored, on="fips", how="left")
 picks["rank"] = np.arange(1, len(picks) + 1)
 

@@ -96,7 +96,7 @@ def run_target(panel: pd.DataFrame, target: str) -> dict:
         out["test"][name] = evaluate(yte, m.predict_proba(Xte)[:, 1], k)
     for name, col in {"rank_by_population": "log_pop", "rank_by_freeway_vmt": "log_fwy_vmt",
                       "rank_by_existing_ports": "log_dcfc_ports"}.items():
-        score = pd.Series(te[col].values).rank(pct=True, method="first").values
+        score = pd.Series(te[col].values).rank(pct=True, method="average").values  # tie-neutral
         res = evaluate(yte, score, k)
         res["brier"] = None  # ranks are not probabilities
         out["baselines"][name] = res

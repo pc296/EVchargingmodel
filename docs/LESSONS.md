@@ -45,3 +45,8 @@ Format: date, what happened, why, durable takeaway.
 - What: docs said 86 stations lacked open dates (true for all DC rows; only 1 of the 15,939 stations used), 30% of incentives lacked dates (true for all EV laws; 62% of the 292 incentive records used), and IONNA averaged 8.4 ports (8.46 on the 180 sites used).
 - Why: counts were taken during exploration, before filters were final, and never re-derived.
 - Takeaway: every figure in a document is regenerated from the final processed data by script before release.
+
+## 2026-09-29: Independent review caught an inert control and a tie rule
+- What: the app's "Exact optimizer" checkbox did nothing (one cost per site); baseline ranks broke ties by row order, moving one baseline AUC by 0.007.
+- Why: the control was added for a case the app never produces; the rank method was copied from a tie-breaking use.
+- Takeaway: every UI control needs a test or a visible effect; evaluation baselines use tie-neutral ranks.

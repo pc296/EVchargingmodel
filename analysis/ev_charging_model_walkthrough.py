@@ -515,7 +515,7 @@ for tgt, label in [("y_new_site", "A"), ("y_first_site", "B")]:
     rows = {name: evaluate(y, preds[(tgt, name)]) for name in ["logit", "lasso", "forest"]}
     for name, col in [("rank by population", "log_pop"), ("rank by freeway VMT", "log_fwy_vmt"),
                       ("rank by existing ports", "log_dcfc_ports")]:
-        r = evaluate(y, pd.Series(te[col].values).rank(pct=True, method="first").values)
+        r = evaluate(y, pd.Series(te[col].values).rank(pct=True, method="average").values)  # ties share a rank
         r["Brier"] = np.nan  # ranks are not probabilities
         rows[name] = r
     results[label] = pd.DataFrame(rows).T
