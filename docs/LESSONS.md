@@ -60,3 +60,8 @@ Format: date, what happened, why, durable takeaway.
 - What: both maps drew no counties. The county GeoJSON's feature id was the row number, not the FIPS code, so no county matched (featureidkey="id"). The earlier color-range change was harmless but did not fix it. Once ids matched, Falls Church's empty shape (null geometry) crashed Plotly.
 - Why: geopandas to_json writes the DataFrame index as the feature id; the check on the live app counted path elements, which Plotly creates even when their geometry is empty.
 - Takeaway: set the index to the join key before writing GeoJSON; drop empty geometries; verify maps by rendering them (non-empty path geometry), not by counting elements. Test added (test_map_feature_ids_are_fips).
+
+## 2026-09-29: Fixed data did not reach the live app (stale cache)
+- What: after the GeoJSON fix was deployed, the live app still served the old file (feature id "0").
+- Why: st.cache_data keys on the function's code and arguments, not on the files it reads; Streamlit Cloud keeps the process alive across redeploys, so the cached old data survived.
+- Takeaway: cached loaders take a content hash of their input files as an argument. Verify fixes on the live app by reading the data the page actually received.
