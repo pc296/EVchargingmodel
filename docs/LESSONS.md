@@ -40,3 +40,23 @@ Format: date, what happened, why, durable takeaway.
 - What: the first chunk failed on `import numbers_parser`; Colab also has none of the repo's data files.
 - Why: the file was tested only inside the repo, where dev requirements and data exist.
 - Takeaway: shared notebooks carry their own setup chunk (install missing packages, fetch data) and are tested from an empty folder.
+
+## 2026-09-29: Figures in docs computed on the wrong subset
+- What: docs said 86 stations lacked open dates (true for all DC rows; only 1 of the 15,939 stations used), 30% of incentives lacked dates (true for all EV laws; 62% of the 292 incentive records used), and IONNA averaged 8.4 ports (8.46 on the 180 sites used).
+- Why: counts were taken during exploration, before filters were final, and never re-derived.
+- Takeaway: every figure in a document is regenerated from the final processed data by script before release.
+
+## 2026-09-29: Independent review caught an inert control and a tie rule
+- What: the app's "Exact optimizer" checkbox did nothing (one cost per site); baseline ranks broke ties by row order, moving one baseline AUC by 0.007.
+- Why: the control was added for a case the app never produces; the rank method was copied from a tie-breaking use.
+- Takeaway: every UI control needs a test or a visible effect; evaluation baselines use tie-neutral ranks.
+
+## 2026-09-29: County-types map rendered blank on the live app
+- What: the Explore tab map showed only state outlines. Each cluster trace used a constant z, so zmin equaled zmax and Plotly could not assign a fill.
+- Why: the earlier live check counted county shapes but did not check that they had a fill color, and local screenshots could not render maps at all.
+- Takeaway: verify maps on the deployed app by checking rendered fill colors, not just element counts.
+
+## 2026-09-29 (correction): Real cause of the blank maps
+- What: both maps drew no counties. The county GeoJSON's feature id was the row number, not the FIPS code, so no county matched (featureidkey="id"). The earlier color-range change was harmless but did not fix it. Once ids matched, Falls Church's empty shape (null geometry) crashed Plotly.
+- Why: geopandas to_json writes the DataFrame index as the feature id; the check on the live app counted path elements, which Plotly creates even when their geometry is empty.
+- Takeaway: set the index to the join key before writing GeoJSON; drop empty geometries; verify maps by rendering them (non-empty path geometry), not by counting elements. Test added (test_map_feature_ids_are_fips).
