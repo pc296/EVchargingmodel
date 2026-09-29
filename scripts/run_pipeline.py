@@ -113,8 +113,12 @@ def main() -> None:
     st_map.to_parquet(OUT / "stations_map.parquet", index=False)
 
     counties = gpd.read_file(io.EXTERNAL / "us_atlas_2023_counties-10m.json", layer="counties")
-    counties = counties[counties["id"].isin(app["fips"])][["id", "geometry"]]
+    # Feature id must be the FIPS code: the app matches counties on featureidkey="id".
+    counties = counties[counties["id"].isin(app["fips"])][["id", "geometry"]].set_index("id")
     counties["geometry"] = counties.geometry.simplify(0.01, preserve_topology=True)
+    # Empty shapes (Falls Church city, VA, lost to simplification) serialize as null geometry,
+    # which crashes Plotly's choropleth once features match; drop them.
+    counties = counties[~counties.geometry.is_empty & counties.geometry.notna()]
     (OUT / "counties.geojson").write_text(counties.to_json(drop_id=False))
 
     (OUT / "model_metrics.json").write_text(json.dumps(metrics, indent=1, default=float))

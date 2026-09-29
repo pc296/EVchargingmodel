@@ -4,6 +4,8 @@ Last updated: 2026-09-28
 
 ## [Unreleased]
 ### Fixed
+- Both app maps drew no counties: county GeoJSON feature ids were row numbers instead of FIPS codes; regenerated with FIPS ids and without the empty Falls Church shape (which crashed Plotly). Verified by offline render.
+### Fixed
 - County-types map rendered blank: each trace had a constant value, so Plotly's color range collapsed; set zmin/zmax explicitly.
 ### Fixed
 - Baseline rankings now give tied values their average rank (was row order); Target B freeway baseline AUC 0.753 -> 0.746, Target A 0.841 -> 0.843. Model metrics unchanged.

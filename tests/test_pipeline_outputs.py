@@ -49,3 +49,11 @@ def test_labels_align_with_next_year():
     lab = p.loc[p["y_new_site"].notna()]
     nxt = p["new_large_sites_t"].reindex([(f, y + 1) for f, y in lab.index]).values
     assert ((nxt > 0).astype(float) == lab["y_new_site"].values).all()
+
+
+def test_map_feature_ids_are_fips():
+    geo = json.loads((io.PROCESSED / "counties.geojson").read_text())
+    ids = {f["id"] for f in geo["features"]}
+    a = pd.read_parquet(io.PROCESSED / "app_counties.parquet")
+    assert len(ids & set(a["fips"])) >= 3143  # Falls Church may have no polygon after simplification
+    assert all(f["geometry"] is not None for f in geo["features"])  # null geometry crashes Plotly
