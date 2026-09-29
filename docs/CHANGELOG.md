@@ -4,6 +4,8 @@ Last updated: 2026-09-28
 
 ## [Unreleased]
 ### Fixed
+- App data cache now keyed on a content hash of the data files, so redeployed data replaces cached data (the corrected map file was not reaching the live app).
+### Fixed
 - Both app maps drew no counties: county GeoJSON feature ids were row numbers instead of FIPS codes; regenerated with FIPS ids and without the empty Falls Church shape (which crashed Plotly). Verified by offline render.
 ### Fixed
 - County-types map rendered blank: each trace had a constant value, so Plotly's color range collapsed; set zmin/zmax explicitly.

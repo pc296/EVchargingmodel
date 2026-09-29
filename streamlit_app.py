@@ -23,8 +23,21 @@ C_PICK, C_IONNA, C_OTHER, INK2 = "#eb6834", "#1baf7a", "#898781", "#52514e"
 st.set_page_config(page_title="EV Charging Expansion Planner", layout="wide")
 
 
+APP_FILES = ["app_counties.parquet", "stations_map.parquet", "counties.geojson", "model_metrics.json"]
+
+
+def data_signature() -> str:
+    """Content hash of the app's data files, so a redeploy with new data refreshes the cache."""
+    import hashlib
+
+    h = hashlib.sha256()
+    for name in APP_FILES:
+        h.update((PROC / name).read_bytes())
+    return h.hexdigest()
+
+
 @st.cache_data
-def load():
+def load(signature: str):  # signature is part of the cache key; see data_signature()
     df = pd.read_parquet(PROC / "app_counties.parquet")
     stations = pd.read_parquet(PROC / "stations_map.parquet")
     geo = json.loads((PROC / "counties.geojson").read_text())
@@ -32,7 +45,7 @@ def load():
     return df, stations, geo, metrics
 
 
-df, stations, geo, metrics = load()
+df, stations, geo, metrics = load(data_signature())
 
 # ---------------- Sidebar controls ----------------
 sb = st.sidebar
