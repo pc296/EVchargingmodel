@@ -32,6 +32,7 @@ def supply_features(fips_frame: pd.DataFrame, st: pd.DataFrame, t: int) -> pd.Da
     out["large_sites"] = large.groupby("fips").size()
     out["tesla_ports"] = s[s["is_tesla"]].groupby("fips")["dc_ports"].sum()
     out["ionna_ports"] = s[s["is_ionna"]].groupby("fips")["dc_ports"].sum()
+    out["ionna_sites"] = s[s["is_ionna"]].groupby("fips").size()
     out["new_large_sites_t"] = large[large["open_year_filled"] == t].groupby("fips").size()
     out = out.fillna(0).reset_index()
     lat, lon = fips_frame["cent_lat"].values, fips_frame["cent_lon"].values

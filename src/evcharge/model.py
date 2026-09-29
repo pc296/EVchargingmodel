@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-import statsmodels.api as sm
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.inspection import permutation_importance
 from sklearn.linear_model import LogisticRegression, LogisticRegressionCV
@@ -114,6 +113,8 @@ def run_target(panel: pd.DataFrame, target: str) -> dict:
                                     "max_auc": float(np.max(aucs))}
 
     # Statsmodels logit on standardized features for coefficient table (odds ratios, p-values).
+    import statsmodels.api as sm  # pipeline-only dependency
+
     varying = [c for c in FEATURES if Xtr[c].std() > 0]
     Xs = Xtr[varying]
     mu, sd = Xs.mean(), Xs.std()
