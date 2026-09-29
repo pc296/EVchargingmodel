@@ -8,7 +8,11 @@
 # `data/raw/` and `data/external/`, and runs top to bottom in about two minutes. Each `# %%` marker
 # starts a code chunk; VS Code, Spyder, PyCharm and Jupyter (via jupytext) run them as cells.
 #
+# **Open in Google Colab:** https://colab.research.google.com/github/pc296/evchargingmodel/blob/main/analysis/ev_charging_model_walkthrough.ipynb
+# (then Runtime > Run all; chunk 0 downloads the data).
+#
 # **Chunks**
+# 0. Colab setup (only runs in Colab)
 # 1. Setup
 # 2. Load and clean each data source
 # 3. Assign every fast-charging station to a county (spatial join)
@@ -24,6 +28,25 @@
 #
 # The production code in `src/evcharge/` implements the same steps as reusable modules;
 # `tests/test_walkthrough.py` checks that this file reproduces the app's model metrics.
+
+# %% [markdown]
+# ## 0. Running in Google Colab (skip on a local copy of the repo)
+# Colab starts empty. This chunk installs the one package Colab lacks (`numbers-parser`, which
+# reads the AFDC laws file saved in Apple Numbers format) and downloads the public repo, which
+# holds the raw data, then moves into it. On a local copy of the repo it does nothing.
+
+# %%
+import os
+import subprocess
+import sys
+
+if "google.colab" in sys.modules:
+    subprocess.run([sys.executable, "-m", "pip", "install", "-q", "numbers-parser"], check=True)
+    if not os.path.exists("evchargingmodel"):
+        subprocess.run(["git", "clone", "--depth", "1",
+                        "https://github.com/pc296/evchargingmodel.git"], check=True)
+    os.chdir("evchargingmodel")
+    print("Colab ready:", os.getcwd())
 
 # %% [markdown]
 # ## 1. Setup

@@ -35,3 +35,8 @@ Format: date, what happened, why, durable takeaway.
 ## 2026-09-28: A reconciliation test caught out-of-scope stations
 - What: 2 Puerto Rico stations were silently dropped by the spatial join.
 - Takeaway: keep reconciliation tests that compare row counts before and after joins, scoped explicitly.
+
+## 2026-09-29: Walkthrough failed on Google Colab
+- What: the first chunk failed on `import numbers_parser`; Colab also has none of the repo's data files.
+- Why: the file was tested only inside the repo, where dev requirements and data exist.
+- Takeaway: shared notebooks carry their own setup chunk (install missing packages, fetch data) and are tested from an empty folder.
