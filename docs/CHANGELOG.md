@@ -3,6 +3,10 @@ Purpose: human-readable, reverse-chronological record of every meaningful change
 Last updated: 2026-09-28
 
 ## [Unreleased]
+### Changed
+- County-type label "High-EV-adoption states" renamed "Counties in high-EV-adoption states": the EV signal is a state figure applied to every county, and the group holds 180 counties across 8 states, not whole states. Labels only; no results changed.
+### Changed
+- Walkthrough notebook text edited by Pat (shorter explanations, table of contents). Duplicate cost-scenario cell removed; dollar signs escaped so Colab no longer renders text between them as math; corrected the note on the integer program (not used by the app). Code unchanged; results identical.
 ### Fixed
 - App data cache now keyed on a content hash of the data files, so redeployed data replaces cached data (the corrected map file was not reaching the live app).
 ### Fixed

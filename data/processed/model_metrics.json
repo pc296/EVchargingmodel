@@ -528,7 +528,7 @@
    "pop_growth": -0.82,
    "n": 543
   },
-  "High-EV-adoption states": {
+  "Counties in high-EV-adoption states": {
    "log_pop": 0.5,
    "log_density": -0.12,
    "log_fwy_vmt": 0.27,
