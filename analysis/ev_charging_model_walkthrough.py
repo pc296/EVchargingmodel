@@ -4,14 +4,9 @@
 # **Team:** Pat Cronin, TJ Mei, Arohi Singh  |  **Industry:** Energy
 #
 # This file is the annotated, self-contained version of the model behind the app
-# (https://evchargingmodel-ui5fwbrdxjotcghzbovdvf.streamlit.app/). It reads only the raw files in
-# `data/raw/` and `data/external/`, and runs top to bottom in about two minutes. Each `# %%` marker
-# starts a code chunk; VS Code, Spyder, PyCharm and Jupyter (via jupytext) run them as cells.
+# (https://evchargingmodel-ui5fwbrdxjotcghzbovdvf.streamlit.app/).
 #
-# **Open in Google Colab:** https://colab.research.google.com/github/pc296/evchargingmodel/blob/main/analysis/ev_charging_model_walkthrough.ipynb
-# (then Runtime > Run all; chunk 0 downloads the data).
-#
-# **Chunks**
+# **Chunk Table of Contents**
 # 0. Colab setup (only runs in Colab)
 # 1. Setup
 # 2. Load and clean each data source
@@ -25,15 +20,11 @@
 # 10. Build cost scenarios from published sources
 # 11. Score counties and select sites under a capital budget
 # 12. Summary of results and limitations
-#
-# The production code in `src/evcharge/` implements the same steps as reusable modules;
-# `tests/test_walkthrough.py` checks that this file reproduces the app's model metrics.
 
 # %% [markdown]
-# ## 0. Running in Google Colab (skip on a local copy of the repo)
-# Colab starts empty. This chunk installs the one package Colab lacks (`numbers-parser`, which
-# reads the AFDC laws file saved in Apple Numbers format) and downloads the public repo, which
-# holds the raw data, then moves into it. On a local copy of the repo it does nothing.
+# ## 0. Running in Google Colab
+# This chunk installs numbers-parser, which
+# reads the AFDC laws file saved in Apple Numbers format and downloads the public repo, which holds the raw data.
 
 # %%
 import os
@@ -107,8 +98,7 @@ STATE_ABBR = {
 # **Unit of analysis:** one U.S. county (50 states + DC, 2025 Census geography: 3,144 counties).
 #
 # ### 2a. County list and FIPS crosswalk
-# The team's county file from Deliverable 2 still used four county codes that no longer exist.
-# We map them to current geography so every later join is on the 5-digit FIPS code.
+# Maps four county codes from the data that no longer exist to current geography so every later join is on the 5-digit FIPS code.
 
 # %%
 keys = pd.read_csv(RAW / "afdc_ionna_dcfc_by_county_prior.csv")
@@ -132,8 +122,7 @@ print(f"Counties: {len(keys):,}")
 # %% [markdown]
 # ### 2b. Population, 2020-2025 (Census Vintage 2025)
 # The Census file has county names but no FIPS codes. Names differ in capitalization and spacing
-# ("Baltimore city" vs "Baltimore City", "LaSalle" vs "La Salle"), so we match on a normalized name
-# and stop if any county fails to match.
+# ("Baltimore city" vs "Baltimore City", "LaSalle" vs "La Salle"), so we match on a normalized name.
 
 # %%
 def norm_name(s: pd.Series) -> pd.Series:
@@ -154,12 +143,6 @@ print(pop_wide.sum().map("{:,.0f}".format))
 # ### 2c. Freeway traffic (FHWA HPMS 2024)
 # Measure: daily vehicle-miles traveled (VMT) on Interstates and other freeways (functional
 # classes 1-2), plus interstate miles.
-#
-# **Correction to Deliverable 2.** Deliverable 2 summed AADT across road segments, which mostly
-# measures how many pieces a road is cut into. A second team file then imputed 1,377 "missing"
-# counties from their neighbors. Those counties have no freeway at all, so their true value is
-# zero. We keep them at zero. Connecticut's 9 planning regions are the only real gap (HPMS still
-# reports its old counties); we use the statewide total allocated by population share, and flag it.
 
 # %%
 hpms = pd.read_csv(RAW / "hpms_2024_road_utilization.csv")
@@ -191,7 +174,7 @@ print(f"Counties with no interstate/freeway (true zero): {(~traffic['has_freeway
 # ### 2d. State-level inputs: EV registrations, electricity price, EV incentives
 # * **EV registrations (AFDC):** state battery-EV counts, converted to BEVs per 1,000 residents.
 #   County-level registrations were not available, so every county in a state gets the state rate
-#   (a stated limitation; the planned fix is Atlas EV Hub county data plus Census demographics).
+#   (a stated limitation).
 # * **Electricity price (EIA 2024):** all-sector average retail price, cents/kWh.
 # * **EV incentives (AFDC Laws and Incentives):** count of state incentives tagged to electric
 #   vehicles that were enacted by year t. Records without an enacted date count in every year.
@@ -242,7 +225,7 @@ print(f"DC fast stations: {len(st):,}  |  ports: {st['dc_ports'].sum():,}  |  "
 
 # %% [markdown]
 # ## 3. Assign every station to a county (spatial join)
-# Deliverable 2 used AI to map station addresses to counties, which cannot be audited. Here each
+# Here each
 # station's coordinates are matched to 2023 Census county boundaries (point-in-polygon). Stations
 # just offshore snap to the nearest county within 5 km. Puerto Rico is out of scope and drops out.
 
@@ -271,7 +254,7 @@ st = pd.DataFrame(joined[joined["fips"].notna()].drop(columns=["geometry", "inde
 
 # %% [markdown]
 # ## 4. Build the county-by-year panel
-# One row per county per year t = 2020-2025, describing the county **at the end of year t**.
+# One row per county per year t = 2020-2025, describing the county at the end of year t.
 # Supply is cumulative: every station open by year t. Two geographic measures use great-circle
 # distance from the county centroid: miles to the nearest large site, and DC ports within 50 miles
 # (the spacing used by the federal NEVI corridor program).
@@ -343,15 +326,11 @@ print(panel.groupby("year")[["dcfc_ports", "large_sites"]].sum().astype(int))
 
 # %% [markdown]
 # ## 5. Define the two targets
-# Features describe year t; outcomes are observed in **year t+1**, so the model never sees the
-# future it is asked to predict.
+# Features describe year t; outcomes are observed in year t+1
 # * **Target A (`y_new_site`)**: the county gains at least one new DC site with 4+ ports in t+1.
 #   Answers "where is the market expanding?"
 # * **Target B (`y_first_site`)**: among counties with no 4+ port site at the end of t, the first
 #   one opens in t+1. Answers "where is the market about to enter?"
-#
-# Why not Deliverable 1's target ("county has a station")? About 60% of counties already do, so
-# that label mostly records the present rather than predicting a build decision.
 
 # %%
 nxt = panel[["fips", "year", "new_large_sites_t"]].assign(year=lambda d: d["year"] - 1)
@@ -367,7 +346,7 @@ print((rates * 100).round(1).rename(columns=lambda c: c + " (%)"))
 
 # %% [markdown]
 # ## 6. Visualize
-# ### 6a. The market is growing fast, and the targets are not rare
+# ### 6a. The market is growing fast
 # New large sites per year and the share of counties that received one. The rising base rate
 # matters for evaluation: 2025 (our test year) is busier than the training years.
 
@@ -441,8 +420,7 @@ fig.savefig(FIG / "02_county_types_map.png", dpi=160, bbox_inches="tight")
 # * Logistic regression: the main model. Interpretable odds ratios; the course baseline.
 # * Lasso (L1) logistic regression: same form, penalty chosen by 5-fold CV; tests whether a
 #   smaller feature set predicts as well.
-# * Random forest: allows non-linear effects and interactions; tests whether the linear form
-#   leaves accuracy on the table.
+# * Random forest: allows non-linear effects and interactions; tests whether the linear form sacrifices potential accuracy.
 
 # %%
 FEATURES = ["log_pop", "pop_growth", "log_density", "bev_per_1k", "elec_price_c_kwh", "ev_incentives",
@@ -497,7 +475,6 @@ for tgt in ["y_new_site", "y_first_site"]:
 # * **Brier score**: mean squared error of the probabilities (calibration + sharpness).
 #
 # Baselines rank counties by one variable: population, freeway traffic, or existing ports.
-# If a model cannot beat "go where the people are", it adds nothing.
 
 # %%
 def evaluate(y, p):
@@ -515,7 +492,7 @@ for tgt, label in [("y_new_site", "A"), ("y_first_site", "B")]:
     rows = {name: evaluate(y, preds[(tgt, name)]) for name in ["logit", "lasso", "forest"]}
     for name, col in [("rank by population", "log_pop"), ("rank by freeway VMT", "log_fwy_vmt"),
                       ("rank by existing ports", "log_dcfc_ports")]:
-        r = evaluate(y, pd.Series(te[col].values).rank(pct=True, method="average").values)  # ties share a rank
+        r = evaluate(y, pd.Series(te[col].values).rank(pct=True, method="first").values)
         r["Brier"] = np.nan  # ranks are not probabilities
         rows[name] = r
     results[label] = pd.DataFrame(rows).T
@@ -555,7 +532,7 @@ for tgt in ["y_new_site", "y_first_site"]:
 # %% [markdown]
 # ### 8c. Out-of-time check on 2026
 # Refit on every labeled year (outcomes 2022-2025), score end-of-2025 features, and compare with
-# large sites that actually opened January 1 - September 22, 2026. The model never saw these.
+# large sites that opened January 1 - September 22, 2026.
 
 # %%
 latest = panel[panel["year"] == 2025].copy()
@@ -629,11 +606,12 @@ fig.savefig(FIG / "04_target_A_odds_ratios.png", dpi=160)
 # %% [markdown]
 # ## 10. Build cost scenarios
 # Default site: 8 DC ports (IONNA's current sites average 8.5). Three scenarios from published data:
-# * **Low**: median cost per port across 330 NEVI award applications, all-in (Paren, Oct 2024):
-#   $183,116/port.
-# * **Base**: NREL per-port equipment ($141,900) + installation ($90,800) at 350 kW, plus a
-#   $100,000 distribution transformer (Borlaug et al., 2026, *Advances in Applied Energy* 21).
-# * **High**: Base x the NEVI top-quartile / median project cost ratio ($1,053,624 / $802,267 = 1.31).
+#
+# **Low**: median cost per port across 330 NEVI award applications, all-in (Paren, Oct 2024): \$183,116/port.
+#
+# **Base**: NREL per-port equipment (\$141,900) + installation (\$90,800) at 350 kW, plus a \$100,000 distribution transformer (Borlaug et al., 2026, Advances in Applied Energy 21).
+#
+# **High**: Base × the NEVI top-quartile / median project cost ratio (\$1,053,624 / \$802,267) = 1.31.
 #
 # Excluded: land, feeder or substation upgrades, and regional construction cost differences.
 
@@ -658,8 +636,8 @@ SITE_COST = scenarios.loc["Base", "site_cost"]
 #
 # **Selection.** The k-th new site in a county is worth score x 0.5^(existing IONNA sites + k - 1),
 # up to 2 per county. We maximize total value subject to total cost <= budget. With one cost per
-# site, taking the highest values is exactly optimal (the app also offers an integer program for
-# unequal costs).
+# site, taking the highest values is exactly optimal (an integer program for unequal costs is
+# implemented in the code but not used by the app).
 
 # %%
 app = current.drop(columns=["pop_growth"]).merge(
@@ -693,10 +671,9 @@ print("\nPicks by state:", picks["state"].value_counts().head(8).to_dict())
 # %% [markdown]
 # ## 12. Summary
 # **What the models show.** Both targets are predictable well above chance (test ROC AUC about 0.88
-# for A and 0.82 for B), and the result holds with whole states held out and on 2026 openings the
-# models never saw. The lift over a population-only ranking is moderate (about +0.03 AUC for A and
+# for A and 0.82 for B), and the result holds with whole states held out and on 2026 openings. The lift over a population-only ranking is moderate (about +0.03 AUC for A and
 # +0.05 for B): chargers follow people, and the models add traffic, market momentum and gap
-# information on top. Lasso and random forest do not beat plain logistic regression, which
+# information on top. Lasso and random forest do not meaningfully differ from plain logistic regression, which
 # supports the simpler, interpretable model.
 #
 # **What the models do not show.** Both targets describe where the market has built, not where a
