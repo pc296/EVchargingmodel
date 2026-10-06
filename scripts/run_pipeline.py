@@ -28,7 +28,7 @@ CLUSTER_FEATURES = ["log_pop", "log_density", "log_fwy_vmt", "bev_per_1k",
 def name_clusters(centers: pd.DataFrame) -> dict[int, str]:
     """Plain-language names from standardized cluster centers (rules checked in order)."""
     rules = [
-        (lambda c: c["bev_per_1k"] > 1.5, "High-EV-adoption states"),
+        (lambda c: c["bev_per_1k"] > 1.5, "Counties in high-EV-adoption states"),
         (lambda c: c["log_pop"] > 1.0, "Metro and suburban"),
         (lambda c: c["log_dist_large_dcfc"] > 1.0, "Remote, charging desert"),
         (lambda c: c["log_ports_per_1k_bev"] > 0.8, "Highway corridor, well supplied"),

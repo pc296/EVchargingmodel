@@ -382,7 +382,7 @@ centers = pd.DataFrame(km.cluster_centers_, columns=CLUSTER_FEATURES)
 
 def cluster_name(c):
     if c["bev_per_1k"] > 1.5:
-        return "High-EV-adoption states"
+        return "Counties in high-EV-adoption states"
     if c["log_pop"] > 1.0:
         return "Metro and suburban"
     if c["log_dist_large_dcfc"] > 1.0:
